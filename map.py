@@ -1,11 +1,12 @@
 # Self Driving Car
 
+# Importing the libraries
 import numpy as np
 from random import random, randint
 import matplotlib.pyplot as plt
 import time
 
-# Kivy
+# Importing the Kivy packages
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
@@ -15,22 +16,25 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.vector import Vector
 from kivy.clock import Clock
 
+# Importing the Dqn object from our AI in ai.py
+from ai import Dqn
+# Adding this line if we don't want the right click to put a red point
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-from ai import Dqn # Importing the Dqn object from our AI in ai.py
-
-Config.set('input', 'mouse', 'mouse,multitouch_on_demand') # Adding this line if we don't want the right click to put a red point
-
-last_x = 0 # Introducing last_x and last_y, used to keep the last point in memory when we draw the sand on the map
+# Introducing last_x and last_y, used to keep the last point in memory when we draw the sand on the map
+last_x = 0
 last_y = 0
 n_points = 0
 length = 0
 
-brain = Dqn(5,3,0.9) # Getting our AI, which we call "brain", and that contains our neural network that represents our Q-function
+# Getting our AI, which we call "brain", and that contains our neural network that represents our Q-function
+brain = Dqn(5,3,0.9)
 action2rotation = [0,20,-20]
 last_reward = 0
 scores = []
 
-first_update = True  # Initializing the map
+# Initializing the map
+first_update = True
 def init():
     global sand
     global goal_x
@@ -41,9 +45,12 @@ def init():
     goal_y = largeur - 20
     first_update = False
 
-last_distance = 0  # Initializing the last distance
+# Initializing the last distance
+last_distance = 0
 
-class Car(Widget):     # Creating the car class
+# Creating the car class
+
+class Car(Widget):
     
     angle = NumericProperty(0)
     rotation = NumericProperty(0)
@@ -87,7 +94,9 @@ class Ball2(Widget):
 class Ball3(Widget):
     pass
 
-class Game(Widget):    # Creating the game class
+# Creating the game class
+
+class Game(Widget):
 
     car = ObjectProperty(None)
     ball1 = ObjectProperty(None)
@@ -97,7 +106,6 @@ class Game(Widget):    # Creating the game class
     def serve_car(self):
         self.car.center = self.center
         self.car.velocity = Vector(6, 0)
-   
 
     def update(self, dt):
 
@@ -155,7 +163,9 @@ class Game(Widget):    # Creating the game class
             goal_y = self.height-goal_y
         last_distance = distance
 
-class MyPaintWidget(Widget):  # Adding the painting tools
+# Adding the painting tools
+
+class MyPaintWidget(Widget):
 
     def on_touch_down(self, touch):
         global length, n_points, last_x, last_y
@@ -219,5 +229,6 @@ class CarApp(App):
         print("loading last saved brain...")
         brain.load()
 
-if __name__ == '__main__':  # Running the whole thing
+# Running the whole thing
+if __name__ == '__main__':
     CarApp().run()

@@ -1,4 +1,7 @@
 # AI for Self Driving Car
+
+# Importing the libraries
+
 import numpy as np
 import random
 import os
@@ -9,9 +12,11 @@ import torch.optim as optim
 import torch.autograd as autograd
 from torch.autograd import Variable
 
+# Creating the architecture of the Neural Network
+
 class Network(nn.Module):
     
-    def __init__(self, input_size, nb_action):  # Creating the architecture of the Neural Network
+    def __init__(self, input_size, nb_action):
         super(Network, self).__init__()
         self.input_size = input_size
         self.nb_action = nb_action
@@ -23,7 +28,9 @@ class Network(nn.Module):
         q_values = self.fc2(x)
         return q_values
 
-class ReplayMemory(object):  # Implementing Experience Replay
+# Implementing Experience Replay
+
+class ReplayMemory(object):
     
     def __init__(self, capacity):
         self.capacity = capacity
@@ -38,7 +45,9 @@ class ReplayMemory(object):  # Implementing Experience Replay
         samples = zip(*random.sample(self.memory, batch_size))
         return map(lambda x: Variable(torch.cat(x, 0)), samples)
 
-class Dqn():  # Implementing Deep Q Learning
+# Implementing Deep Q Learning
+
+class Dqn():
     
     def __init__(self, input_size, nb_action, gamma):
         self.gamma = gamma
@@ -51,8 +60,8 @@ class Dqn():  # Implementing Deep Q Learning
         self.last_reward = 0
     
     def select_action(self, state):
-        probs = F.softmax(self.model(Variable(state, volatile = True))*0) # T=100
-        action = probs.multinomial()
+        probs = F.softmax(self.model(Variable(state, volatile = True))*7) # T=100
+        action = probs.multinomial(1)
         return action.data[0,0]
     
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
@@ -61,7 +70,7 @@ class Dqn():  # Implementing Deep Q Learning
         target = self.gamma*next_outputs + batch_reward
         td_loss = F.smooth_l1_loss(outputs, target)
         self.optimizer.zero_grad()
-        td_loss.backward(retain_variables = True)
+        td_loss.backward(gradient=(None))
         self.optimizer.step()
     
     def update(self, reward, new_signal):
